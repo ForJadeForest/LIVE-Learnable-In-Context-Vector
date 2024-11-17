@@ -30,6 +30,7 @@ class VQAICVModule(pl.LightningModule):
         self.interface.requires_grad_(False)
         if hasattr(self.interface.model, "gradient_checkpointing_enable"):
             self.interface.model.gradient_checkpointing_enable()
+            self.interface.model.enable_input_require_grads()
 
         self.icv_model = LearnableICVInterventionLMM(
             interface,

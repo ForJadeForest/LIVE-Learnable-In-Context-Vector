@@ -25,8 +25,6 @@ pip install transformers==4.28.1
 
 # Install the lmm_icl_interface
 pip install git+https://github.com/ForJadeForest/lmm_icl_interface.git
-# Install the baukit
-pip install git+https://github.com/davidbau/baukit.git
 ```
 
 ## Model Prepare

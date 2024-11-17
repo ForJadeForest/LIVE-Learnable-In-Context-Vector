@@ -24,6 +24,8 @@ class VQAICVModule(pl.LightningModule):
         self.module_cfg = module_cfg
         self.lmm_cfg = lmm_cfg
         self.interface = interface
+        # For enable gradient checkpointing
+        self.interface.model.train()
 
         self.interface.requires_grad_(False)
         if hasattr(self.interface.model, "gradient_checkpointing_enable"):

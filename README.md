@@ -11,7 +11,6 @@ The implementation of [LIVE: Learnable In-Context Vector for Visual Question Ans
 - [2024.10.30] We change the title from `L-ICV: Learnable In-Context Vector for Visual Question Answering` to `LIVE: Learnable In-Context Vector for Visual Question Answering`
 - [2024.09.26]🔥 L-ICV is accepted by Neurips2024.
 - [2024.07.14] We support more MLLM (Idefics2) for L-ICV.
-  - Thanks to [baukit](https://github.com/davidbau/baukit). ‼️ However, we found that it consumes more GPU memory and slow the inference speed. We are attempting to use native PyTorch hooks to address this issue.
 
 ## Install 
 ```bash

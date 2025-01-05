@@ -10,7 +10,6 @@ from lmm_icl_interface import (
     Idefics2Interface,
     IdeficsInterface,
     LMMPromptManager,
-    OpenFlamingoInterface,
 )
 
 
@@ -42,12 +41,14 @@ def init_interface(cfg):
             model_name_or_path=model_cpk_dir / cfg.lmm.model_name,
             precision=cfg.lmm.precision,
             prompt_manager=prompt_manager,
+            model_device=cfg.lmm.device,
             instruction=cfg.prompt.instruction,
             image_field=cfg.prompt.image_field,
             label_field=cfg.prompt.label_filed,
         )
         processor = interface.processor
     elif "openflamingo" in cfg.lmm.name.lower():
+        from lmm_icl_interface.lmm_infer_interface import OpenFlamingoInterface
         interface = OpenFlamingoInterface(
             lang_encoder_path=model_cpk_dir / cfg.lmm.lang_encoder_path,
             tokenizer_path=model_cpk_dir / cfg.lmm.tokenizer_path,
@@ -55,20 +56,19 @@ def init_interface(cfg):
             cross_attn_every_n_layers=cfg.lmm.cross_attn_every_n_layers,
             hf_root=cfg.lmm.hf_root,
             precision=cfg.lmm.precision,
-            device=cfg.lmm.device,
             prompt_manager=prompt_manager,
             instruction=cfg.prompt.instruction,
             image_field=cfg.prompt.image_field,
             label_field=cfg.prompt.label_filed,
             load_from_local=True,
-            init_device=cfg.lmm.init_device,
+            model_device=cfg.lmm.device,
         )
         processor = interface.processor
     elif cfg.lmm.name == "idefics2-8b-base":
         interface = Idefics2Interface(
             model_name_or_path=model_cpk_dir / cfg.lmm.model_name,
             precision=cfg.lmm.precision,
-            device=cfg.lmm.device,
+            model_device=cfg.lmm.device,
             prompt_manager=prompt_manager,
             instruction=cfg.prompt.instruction,
             image_field=cfg.prompt.image_field,

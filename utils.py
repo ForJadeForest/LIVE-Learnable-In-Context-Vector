@@ -41,7 +41,6 @@ def init_interface(cfg):
         interface = IdeficsInterface(
             model_name_or_path=model_cpk_dir / cfg.lmm.model_name,
             precision=cfg.lmm.precision,
-            device=cfg.lmm.device,
             prompt_manager=prompt_manager,
             instruction=cfg.prompt.instruction,
             image_field=cfg.prompt.image_field,

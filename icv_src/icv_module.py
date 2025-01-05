@@ -26,9 +26,11 @@ class VQAICVModule(pl.LightningModule):
         self.interface = interface
 
         self.interface.requires_grad_(False)
+        self.interface.model.train()
         if hasattr(self.interface.model, "gradient_checkpointing_enable"):
-            self.interface.model.gradient_checkpointing_enable()
-
+            self.interface.model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+            self.interface.model.enable_input_require_grads()
+            
         self.icv_model = LearnableICVInterventionLMM(
             interface,
             enable_intervention=True,
@@ -84,6 +86,13 @@ class VQAICVModule(pl.LightningModule):
         icl_context_mask = self.get_mask(inputs, in_context_length)
         zero_shot_mask = self.get_mask(query_inputs, query_x_length)
 
+        with torch.no_grad():
+            self.icv_model.toggle_intervention(False)
+            self.interface.model.eval()
+            ice_logits = self.icv_model(**inputs)["logits"]
+        self.interface.model.train()
+        self.icv_model.toggle_intervention(True)
+        
         icv_encoder_output = self.icv_encoder()
 
         icv = (
@@ -94,15 +103,11 @@ class VQAICVModule(pl.LightningModule):
         if self.module_cfg.hard_loss_weight:
             query_inputs["labels"] = query_inputs["input_ids"]
 
-        self.icv_model.toggle_intervention(True)
         icv_outputs = self.icv_model(**query_inputs, icv=icv)
 
         if self.module_cfg.only_hard_loss:
             return {"loss": icv_outputs["loss"]}, icv_encoder_output
         icv_logits = icv_outputs["logits"]
-        with torch.no_grad():
-            self.icv_model.toggle_intervention(False)
-            ice_logits = self.icv_model(**inputs)["logits"]
 
         loss = 0.0
         kl_loss = self.calculate_kl_divergence(

@@ -4,7 +4,7 @@ defaults:
 name: "idefics-9b"
 # args for intervention
 total_layers: 32
-layer_format: "model.model.layers.<LAYER_NUM>"
+layer_format: "model.model.layers.<LAYER_NUM>.mlp"
 intervention_layer: -1
 hidden_size: 4096
 
